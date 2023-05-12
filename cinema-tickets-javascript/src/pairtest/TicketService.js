@@ -12,24 +12,29 @@ export default class TicketService {
    */
 
   purchaseTickets(accountId, ...ticketTypeRequests) {
-    const isRequestVaild = isValidOrder(ticketTypeRequests);
+    console.log(`Validating`);
+    const errors = isValidOrder(ticketTypeRequests);
     const paymentService = new TicketPaymentService();
     const reservationService = new SeatReservationService();
 
-    if (isRequestVaild) {
+    // no errors
+    if (errors.length === 0) {
       // work out cost
       const totalCost = getTotalCost(ticketTypeRequests);
-
       // do the payment
+      console.log('Processing Payment: ', totalCost);
       paymentService.makePayment(accountId, totalCost);
+      console.log('Payment Processed !');
 
       // get Number of seats
       const totalSeats = getTotalSeat(ticketTypeRequests);
+      console.log('Reserving Number of seats : ', totalSeats);
 
       // do the seat booking]
       reservationService.reserveSeat(accountId, totalSeats);
+      console.log('Seats are reserved !');
     } else {
-      throw new InvalidPurchaseException('Not an vaild ticket selection');
+      throw new InvalidPurchaseException(errors);
     }
   }
 }

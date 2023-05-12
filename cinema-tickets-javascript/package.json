@@ -7,6 +7,7 @@
   },
   "type": "module",
   "scripts": {
+    "start": "node ./src/main.js",
     "test": "jest",
     "lint": "eslint ."
   },
@@ -22,6 +23,8 @@
     "mocha": "10.0.0"
   },
   "dependencies": {
-    "babel-jest": "^29.5.0"
+    "babel-jest": "^29.5.0",
+    "readline-sync": "^1.4.10",
+    "underscore": "^1.13.6"
   }
 }

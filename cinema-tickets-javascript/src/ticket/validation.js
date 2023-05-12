@@ -1,4 +1,4 @@
-import { ticketType } from './ticket';
+import { ticketType } from './ticket.js';
 
 const maxTicketsPerPurchase = 20;
 
@@ -13,6 +13,7 @@ const getTotalNumOfTickets = (ticket) => {
 };
 
 export const isValidSeatingArrangement = (orders) => {
+  const errors = [];
   const adultTickets = orders.filter(
     (item) => item.getTicketType() === ticketType.ADULT,
   );
@@ -27,15 +28,18 @@ export const isValidSeatingArrangement = (orders) => {
   if (numOfAdultTickets > 0) {
     // infant must seat on adult lap
     if (numOfAdultTickets >= numOfInfantTickets) {
-      return true;
+      errors.push(); // no errors
+    } else {
+      errors.push('1 or more infrant dont have a adult lap to sit on');
     }
-    return false;
+  } else {
+    errors.push('Needs at least 1 adult');
   }
-  return false;
+  return errors;
 };
 
 export const isValidOrder = (orders) => {
-  let result = false;
+  let errors = [];
   // check if it is a vaild array
   if (Array.isArray(orders)) {
     let numberOfTickets = 0;
@@ -43,9 +47,16 @@ export const isValidOrder = (orders) => {
       numberOfTickets += item.getNoOfTickets();
     });
     // Can't order more than 20 tickets
-    if (numberOfTickets > 0 && numberOfTickets <= maxTicketsPerPurchase) {
-      result = isValidSeatingArrangement(orders);
+    if (numberOfTickets > 0) {
+      if (numberOfTickets <= maxTicketsPerPurchase) {
+        const settingError = isValidSeatingArrangement(orders);
+        errors = [...settingError];
+      } else {
+        errors.push('Cannot Order more than 20 tickets');
+      }
+    } else {
+      errors.push('Cannot Order less than 1 tickets');
     }
   }
-  return result;
+  return errors;
 };
